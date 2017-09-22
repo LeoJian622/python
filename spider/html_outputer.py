@@ -40,4 +40,7 @@ class HtmlOutputer(object):
 		fout.write("</tml>")
 
 		fout.close()
+
+	def output_Mysql(self):
+		pass
 		
