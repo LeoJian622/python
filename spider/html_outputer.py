@@ -41,6 +41,6 @@ class HtmlOutputer(object):
 
 		fout.close()
 
-	def output_Mysql(self):
+	def output_mysql(self):
 		pass
 		
