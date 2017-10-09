@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+import MySQLdb
+import re
 
 class HtmlOutputer(object):
 	"""docstring for HtmlOutputer"""
@@ -42,5 +44,25 @@ class HtmlOutputer(object):
 		fout.close()
 
 	def output_mysql(self):
-		pass
-		
+		conn = MySQLdb.Connect(
+			  host='localhost',
+			  port = 3306,
+			  user='root',
+			  passwd='1234',
+			  db ='MNNUOJ',
+			  charset='utf8'
+        )
+		cur = conn.cursor()
+		sqli_insert = "insert into question(No,url,title,description,input,output,prosampleinput,prosampleoutput) values(%s,%s,%s,%s,%s,%s,%s,%s)"
+		for data in self.datas:
+			no = re.findall(r"http://acm.mnnu.edu.cn/Problem/show/id/(.+?)\.htm",data['url'])
+			title =  re.findall(r".\:(.*)",data['title'])
+			try:
+				cur.execute(sqli_insert,(no,data['url'],title,data['description'],data['input'],data['output'],data['prosampleinput'],data['prosampleoutput']))
+			except Exception as e:
+				sqli_updata = "update question SET url=%s,title=%s,description=%s,input=%s,output=%s,prosampleinput=%s,prosampleoutput=%s where No=%s"
+				cur.execute(sqli_updata,(data['url'],title,data['description'],data['input'],data['output'],data['prosampleinput'],data['prosampleoutput'],no))
+
+		cur.close();
+		conn.commit();
+		conn.close();
